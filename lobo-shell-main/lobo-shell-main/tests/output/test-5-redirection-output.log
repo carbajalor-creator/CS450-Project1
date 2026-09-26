@@ -1,7 +1,0 @@
-Commands:
----------
-whoami > tests/output/tmp
-cat tests/output/tmp
----------
-tests/output/tmp either not created or empty
-ls: cannot access 'tests/output/tmp': No such file or directory

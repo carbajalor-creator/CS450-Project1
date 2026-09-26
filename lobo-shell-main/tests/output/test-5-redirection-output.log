@@ -1,0 +1,16 @@
+Commands:
+---------
+whoami > tests/output/tmp
+cat tests/output/tmp
+---------
+Our umask is:
+0002
+File permissions are wrong for this umask:
+  File: tests/output/tmp
+  Size: 10        	Blocks: 8          IO Block: 4096   regular file
+Device: 8,16	Inode: 213268851   Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 7819/jgallegos)   Gid: ( 7821/jgallegos)
+Access: 2026-09-26 02:08:17.759447848 -0700
+Modify: 2026-09-26 02:08:17.757447825 -0700
+Change: 2026-09-26 02:08:17.757447825 -0700
+ Birth: 2026-09-26 02:06:39.802320084 -0700

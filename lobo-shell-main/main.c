@@ -291,6 +291,26 @@ void setup_redirection(char** words, int num_words, char** command_args) {
 
 
 
+void checkRedir(char *kit[], int index) {
+	pid_t pid = fork();
+
+	if (pid == -1) {
+		perror("Fork failed\n");
+
+	} else if (pid == 0) {
+		char* command_args[MAX_LINE_WORDS + 1];
+
+		setup_redirection(kit, index, command_args);
+
+		execvp(command_args[0], command_args);
+
+		perror("execvp failed :(\n");
+		exit(1);
+	} else {
+		if (wait(NULL) == -1) { perror("wait\n"); }
+	}
+}
+
 
 
 int main() {
@@ -314,10 +334,89 @@ int main() {
         }
 
         int num_words = split_cmd_line(line, line_words);
-
-        // switch case time :3 
-	int exp = pipehelper(line_words, num_words);
 	
+
+	// >, >>, <
+	//
+	//
+	
+	int redir_val = 0;
+	for (int i = 0; i < num_words; i++) {
+		if ( strchr(line_words[i], '>') != NULL || strchr(line_words[i], '<') != NULL ) {
+			checkRedir(line_words, num_words); {
+		       		redir_val = 1;
+				break;
+			}
+		}			
+	} 
+	
+		
+        // switch case time :3  
+	// no longer switch case time :(
+	
+	int exp = pipehelper(line_words, num_words);
+
+	
+	if (exp == 0 && redir_val == 1) {
+		printf("There was a symbol\n");
+		
+		pid_t pid = fork();
+
+		if (pid == -1) {
+			perror("Fork failed\n");
+
+		} else if (pid == 0) {
+			char* command_args[MAX_LINE_WORDS + 1];
+
+			setup_redirection(line_words, num_words, command_args);
+
+			execvp(command_args[0], command_args);
+
+			perror("execvp failed :(\n");
+			exit(1);
+	} else {
+		if (wait(NULL) == -1) { perror("wait\n"); }
+		}	
+	} else if (exp == 0) {
+		simplecommands(line_words);
+	} else if (exp == 1) {
+		int count;
+		char **result = strpipe(line_words, num_words, &count);
+		
+		//char str1[] = malloc(strlen(result[0]) * sizeof(char));
+		
+		char *cmd1[MAX_LINE_WORDS + 1];
+		char *cmd2[MAX_LINE_WORDS + 1];
+
+		split_cmd_line(result[0], cmd1);
+		split_cmd_line(result[1], cmd2);
+
+		onePipe(cmd1, cmd2);
+
+		for (int i = 0; i < count; i++) {
+			free(result[i]);
+		}
+	
+	} else if (exp == 2) {
+		int count; 
+		char **result = strpipe(line_words, num_words, &count);
+
+		char *cmd1[MAX_LINE_WORDS + 1];
+		char *cmd2[MAX_LINE_WORDS + 1];
+		char *cmd3[MAX_LINE_WORDS + 1];	
+
+		split_cmd_line(result[0], cmd1);
+		split_cmd_line(result[1], cmd2);
+		split_cmd_line(result[2], cmd3);
+
+		twoPipes(cmd1, cmd2, cmd3);
+
+		for (int i = 0; i < count; i++) {
+			free(result[i]);
+		}
+	}
+	
+	/*
 	switch(exp) {
 		case 0:
 		simplecommands(line_words);
@@ -327,21 +426,72 @@ int main() {
 		char **result = strpipe(line_words, num_words, &count);
 		
 		//char str1[] = malloc(strlen(result[0]) * sizeof(char));
-		char str1[] = "";
-		str1 = result[0];
-		char str2[] = result[1];
-		onePipe(str1[], str2[]);
+		
+		char *cmd1[MAX_LINE_WORDS + 1];
+		char *cmd2[MAX_LINE_WORDS + 1];
+
+		split_cmd_line(result[0], cmd1);
+		split_cmd_line(result[1], cmd2);
+
+		onePipe(cmd1, cmd2);
 
 		for (int i = 0; i < count; i++) {
 			free(result[i]);
 		}
 		break;
 		}
+		case 2: {
+		int count; 
+		char **result = strpipe(line_words, num_words, &count);
+
+		char *cmd1[MAX_LINE_WORDS + 1];
+		char *cmd2[MAX_LINE_WORDS + 1];
+		char *cmd3[MAX_LINE_WORDS + 1];	
+
+		split_cmd_line(result[0], cmd1);
+		split_cmd_line(result[1], cmd2);
+		split_cmd_line(result[2], cmd3);
+
+		twoPipes(cmd1, cmd2, cmd3);
+
+		for (int i = 0; i < count; i++) {
+			free(result[i]);
+		}
+		break;
+		}
+		
+	} */
+	
+	// if all else fails, set up redirection
+	
+	/*	
+	pid_t pid = fork();
+
+	if (pid == -1) {
+		perror("Fork failed\n");
+
+	} else if (pid == 0) {
+		char* command_args[MAX_LINE_WORDS + 1];
+
+		setup_redirection(line_words, num_words, command_args);
+
+		execvp(command_args[0], command_args);
+
+		perror("execvp failed :(\n");
+		exit(1);
+	} else {
+		if (wait(NULL) == -1) { perror("wait\n"); }
+	}
+	*/
+   
+
+    }
 
     return 0;
 }
 
-void syserror(const char *s) {
+void syserror(const char *s) 
+{
     extern int errno;
     fprintf(stderr, "%s\n", s);
     fprintf(stderr, " (%s)\n", strerror(errno));

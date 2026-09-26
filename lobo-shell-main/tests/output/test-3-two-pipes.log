@@ -2,9 +2,4 @@ Commands:
 ---------
 cat /usr/share/dict/words | head -100 | wc -l
 ---------
-1c1,2
-< 100
----
-> cat: invalid option -- '1'
-> Try 'cat --help' for more information.
 ---------
