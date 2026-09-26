@@ -1,0 +1,11 @@
+Commands:
+---------
+wc -l < /usr/share/dict/words
+---------
+1c1,3
+< 479826
+---
+> wc: '<': No such file or directory
+>  479826 /usr/share/dict/words
+>  479826 total
+---------
