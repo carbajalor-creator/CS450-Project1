@@ -9,6 +9,7 @@
 #include "constants.h"
 #include "parsetools.h"
 
+void syserror(const char *);
 
 void simplecommands(char *arr[]) {
 	pid_t pid;
@@ -27,143 +28,96 @@ void simplecommands(char *arr[]) {
 
 }
 
-//currently working on
 int onePipe (char* comm1Args[], char*comm2Args[]) {
     int pfd[2];
     pid_t pid;
 
     if (pipe(pfd) == -1) { syserror("couldn't create pipe"); }
     
-    pid = fork(); //first child runs who
+    pid = fork(); //first fork runs first command
     if (pid == -1) { syserror("first fork failed"); }
     else if (pid == 0) {
         if (close(1) == -1) { syserror("couldn't close stdout"); }
         if (dup(pfd[1]) == -1) {syserror("error duping write end"); }
         if (close(pfd[0]) == -1 || close(pfd[1]) == -1) { syserror("couldn't close pipes file descriptors"); }
 
-        //execvp(comm1Args[0], comm1Args);
-        execlp("echo", "echo", "writing to pipe", NULL); //or call simple commands?? help
-        syserror("couldn't exec who");
-    }
-    else {
-        fprintf(stderr, "The first child's pid is %d\n", pid);
+        execvp(comm1Args[0], comm1Args);
+        syserror("couldn't exececute first command");
     }
 
-    pid = fork(); //second fork runs wc
+    pid = fork(); //second fork runs second command
     if (pid == -1) { syserror("first fork failed"); }
     else if (pid == 0) {
-        if (close(0) == -1) { syserror("coulnd't close stdout"); }
+        if (close(0) == -1) { syserror("couldn't close stdin"); }
         if (dup(pfd[0]) == -1) { syserror("error duping read end"); }
         if (close(pfd[0]) == -1 || close(pfd[1]) == -1) { syserror("couldn't close second childs pfd"); }
-        execlp("cat", "cat", NULL); //replace wite call to simplecommands or 
-        syserror("couldn't exec wc");
+        execvp(comm2Args[0], comm2Args);
+        syserror("couldn't exec second command");
     }
-    else {
-        fprintf(stderr, "the second childs pid is %d\n", pid);
-    }
-    //parent
     if (close(pfd[0]) == -1){ syserror("parent couldn't close pipe read end"); }
     if (close(pfd[1]) == -1) { syserror("parent couldn't close pipe write end"); }
     while (wait(NULL) != -1)
         ;
+    return 0;
 }
 
-
-//currently working on
-int twoPipes( char* comm1Args[], char* comm2Args[], char* comm3Args[]){ //not finished
-    int pfd1[2]; //pipe file descriptor 2 is std error
+int twoPipes( char* comm1Args[], char* comm2Args[], char* comm3Args[]){ 
+    int pfd1[2]; 
     int pfd2[2];
-    pid_t pid; //process id variable
+    pid_t pid; 
 
-    if (pipe(pfd1) == -1){ //if error creating pipe
-        syserror( "Could not create a pipe" ); //does syserror
-    }
-    if (pipe(pfd2) == -1){
-        syserror("could not create a second pipe");
-    }
+    if (pipe(pfd1) == -1){ syserror( "Could not create a pipe" ); }
+    if (pipe(pfd2) == -1){ syserror("could not create a second pipe"); }
 
     //FIRST FORK
     pid = fork();
 
-    if (pid == -1) {
-        syserror("first fork failed");
-    }
+    if (pid == -1) { syserror("first fork failed"); }
     else if (pid == 0) {
-        if (close(1) == -1) {
-            syserror("couldn't close stdout");
-        }
-        if (dup(pfd1[1]) == -1) {
-            syserror("error duping pipe 1 write end");
-        }
+        if (close(1) == -1) { syserror("couldn't close stdout"); }
+        if (dup(pfd1[1]) == -1) { syserror("error duping pipe 1 write end"); }
         close(pfd1[0]);
         close(pfd1[1]);
 
         close(pfd2[0]);
         close(pfd2[1]);
 
-        //execvp(comm1Args[0], comm1Args);
-        execlp("echo", "echo", "hello pipe", NULL);
+        execvp(comm1Args[0], comm1Args);
         syserror("couldnt exec command 1");
-    }
-    else {
-        fprintf(stderr, "first child's pid is %d\n", pid);
     }
 
     //SECOND FORK
     pid = fork();
 
-    if (pid == -1) {
-        syserror("second fork failed");
-    }
-    else if (pid == 0) {
-        if (close(0) == -1) {
-            syserror("couldn't close stdin");
-        }
-        if (dup(pfd1[0]) == -1) {
-            syserror("error duping pipe1 read end");
-        }
-        if (close(1) == -1) {
-            syserror("couldn't close stdout");
-        }
-        if (dup(pfd2[1]) == -1) {
-            syserror("error duping pipe 2 write end");
-        }
+    if (pid == -1) { syserror("second fork failed"); }
+    else if (pid == 0) { 
+        if (close(0) == -1) { syserror("couldn't close stdin"); }
+        if (dup(pfd1[0]) == -1) { syserror("error duping pipe 1 read end"); }
+        if (close(1) == -1) { syserror("couldn't close stdout"); }
+        if (dup(pfd2[1]) == -1) { syserror("error duping pipe 2 write end"); }
         close(pfd1[0]);
         close(pfd1[1]);
         close(pfd2[0]);
         close(pfd2[1]);
-        //execvp(comm2Args[0], comm2Args);
-        execlp("cat", "cat", NULL);
+        execvp(comm2Args[0], comm2Args);
         syserror("couldn't exec command 2");
-    }
-    else {
-        fprintf(stderr, "second childs pid is %d\n", pid);
     }
 
     //THIRD FORK
     pid = fork();
-    if (pid == -1) {
-        syserror("third fork failed");
-    }
+    if (pid == -1) { syserror("third fork failed"); }
     else if (pid == 0) {
-        if (close(0) == -1) {
-            syserror("couldn't close stdin");
-        }
-        if (dup(pfd2[0]) == -1) {
-            syserror("error duping pipe 2s read end");
-        }
+        if (close(0) == -1) { syserror("couldn't close stdin"); }
+        if (dup(pfd2[0]) == -1) { syserror("error duping pipe 2s read end"); }
         close(pfd1[0]);
         close(pfd1[1]);
         close(pfd2[0]);
         close(pfd2[1]);
 
-        //execvp(comm3Args[0], comm3Args);
-        execlp("cat", "cat", NULL);
+        execvp(comm3Args[0], comm3Args);
         syserror("couldn't exec command 3");
     }
-    else {
-        fprintf(stderr, "third child's pid is %d\n", pid);
-    }
+
 close(pfd1[0]);
 close(pfd1[1]);
 close(pfd2[0]);
@@ -184,17 +138,16 @@ int main() {
     // True when stdin is connected to a terminal
     int interactive = isatty(STDIN_FILENO);
 
-    //FOR TESTING//
-    char *cmd1[] = {"echo", "hello", NULL};
-    char *cmd2[] = {"cat", NULL};
-    char *cmd3[] = {"cat", NULL};
-    printf("Testing onePipe:\n");
-    onePipe(cmd1, cmd2);
-
-    printf("\nTesting twoPipes:\n");
-    twoPipes(cmd1, cmd2, cmd3);
     // Loop until user hits Ctrl-D (end of input)
     // or some other input error occurs
+    
+    char *cmd1[] = {"echo", "hello is this thing on", NULL};
+    char *cmd2[] = {"cat", NULL};
+    char *cmd3[] = {"cat", NULL};
+    //to call my functions    
+    onePipe(cmd1, cmd2);
+    twoPipes(cmd1, cmd2, cmd3);
+
     while (1) {
         if (interactive) {
             printf("lobo> ");
@@ -209,9 +162,17 @@ int main() {
         for (int i=0; i < num_words; i++) {
             printf("%s\n", line_words[i]);
         }
+        //if one pipe detected call onePipe(cmd1, cmd2)
+        //if two pipes detected call twoPipes(cmd1, cmd2, cmd3)
     }
 
     return 0;
 }
 
-
+void syserror(const char *s)
+{
+    extern int errno;
+    fprintf(stderr, "%s\n", s);
+    fprintf(stderr, " (%s)\n", strerror(errno));
+    exit(1);
+}
