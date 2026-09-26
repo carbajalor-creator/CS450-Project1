@@ -1,0 +1,19 @@
+Commands:
+---------
+ls /usr/bin | head -10
+---------
+1,10c1,2
+< [
+< 2to3
+< 2to3-3.12
+< 411toppm
+< 7z
+< a2ping
+< a2x
+< a52dec
+< a5toa4
+< ab
+---
+> ls: invalid option -- '0'
+> Try 'ls --help' for more information.
+---------
