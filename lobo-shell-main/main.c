@@ -75,7 +75,7 @@ char **strpipe(char *arr[], int index, int *count) {
 
 void syserror(const char *);
 
-int onePipe (char* comm1Args[], char*comm2Args[]) {
+int onePipe (char* comm1Args[], char* comm2Args[]) {
     int pfd[2];
     pid_t pid;
 
@@ -315,16 +315,33 @@ int main() {
 
         int num_words = split_cmd_line(line, line_words);
 
-        for (int i=0; i < num_words; i++) {
-            printf("%s\n", line_words[i]);
-        }
-    }
+        // switch case time :3 
+	int exp = pipehelper(line_words, num_words);
+	
+	switch(exp) {
+		case 0:
+		simplecommands(line_words);
+		break;
+		case 1: {
+		int count;
+		char **result = strpipe(line_words, num_words, &count);
+		
+		//char str1[] = malloc(strlen(result[0]) * sizeof(char));
+		char str1[] = "";
+		str1 = result[0];
+		char str2[] = result[1];
+		onePipe(str1[], str2[]);
+
+		for (int i = 0; i < count; i++) {
+			free(result[i]);
+		}
+		break;
+		}
 
     return 0;
 }
 
-void syserror(const char *s)
-{
+void syserror(const char *s) {
     extern int errno;
     fprintf(stderr, "%s\n", s);
     fprintf(stderr, " (%s)\n", strerror(errno));
