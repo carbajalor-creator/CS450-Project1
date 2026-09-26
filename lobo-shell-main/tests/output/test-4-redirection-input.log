@@ -2,7 +2,4 @@ Commands:
 ---------
 wc -l < /usr/share/dict/words
 ---------
-1a2,3
-> 479826
-> There was a symbol
 ---------

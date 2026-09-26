@@ -5,11 +5,4 @@ whoami > tests/output/tmp
 wc -w < /usr/share/dict/words >> tests/output/tmp
 cat tests/output/tmp
 ---------
-1a2
-> 479826
-3a5,8
-> 479826
-> There was a symbol
-> There was a symbol
-> There was a symbol
 ---------

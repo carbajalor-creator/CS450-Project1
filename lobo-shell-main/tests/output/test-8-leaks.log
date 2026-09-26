@@ -36,3 +36,79 @@ jgallegos
 ==2395863== For lists of detected and suppressed errors, rerun with: -s
 ==2395863== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 Unable to parse Valgrind results
+Valgrind reported:
+==2397952== Memcheck, a memory error detector
+==2397952== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==2397952== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==2397952== Command: ./lobo_shell.x
+==2397952== 
+jgallegos
+==2397952== 
+==2397952== FILE DESCRIPTORS: 3 open (3 std) at exit.
+==2397952== 
+==2397952== HEAP SUMMARY:
+==2397952==     in use at exit: 0 bytes in 0 blocks
+==2397952==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==2397952== 
+==2397952== All heap blocks were freed -- no leaks are possible
+==2397952== 
+==2397952== For lists of detected and suppressed errors, rerun with: -s
+==2397952== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Unable to parse Valgrind results
+Valgrind reported:
+==2456569== Memcheck, a memory error detector
+==2456569== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==2456569== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==2456569== Command: ./lobo_shell.x
+==2456569== 
+jgallegos
+==2456569== 
+==2456569== FILE DESCRIPTORS: 3 open (3 std) at exit.
+==2456569== 
+==2456569== HEAP SUMMARY:
+==2456569==     in use at exit: 0 bytes in 0 blocks
+==2456569==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==2456569== 
+==2456569== All heap blocks were freed -- no leaks are possible
+==2456569== 
+==2456569== For lists of detected and suppressed errors, rerun with: -s
+==2456569== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Unable to parse Valgrind results
+Valgrind reported:
+==2471996== Memcheck, a memory error detector
+==2471996== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==2471996== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==2471996== Command: ./lobo_shell.x
+==2471996== 
+jgallegos
+==2471996== 
+==2471996== FILE DESCRIPTORS: 3 open (3 std) at exit.
+==2471996== 
+==2471996== HEAP SUMMARY:
+==2471996==     in use at exit: 0 bytes in 0 blocks
+==2471996==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==2471996== 
+==2471996== All heap blocks were freed -- no leaks are possible
+==2471996== 
+==2471996== For lists of detected and suppressed errors, rerun with: -s
+==2471996== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Unable to parse Valgrind results
+Valgrind reported:
+==2491761== Memcheck, a memory error detector
+==2491761== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==2491761== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==2491761== Command: ./lobo_shell.x
+==2491761== 
+jgallegos
+==2491761== 
+==2491761== FILE DESCRIPTORS: 3 open (3 std) at exit.
+==2491761== 
+==2491761== HEAP SUMMARY:
+==2491761==     in use at exit: 0 bytes in 0 blocks
+==2491761==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==2491761== 
+==2491761== All heap blocks were freed -- no leaks are possible
+==2491761== 
+==2491761== For lists of detected and suppressed errors, rerun with: -s
+==2491761== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+Unable to parse Valgrind results

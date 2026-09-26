@@ -2,10 +2,8 @@ Commands:
 ---------
 cat < /usr/share/dict/words | head -10 > tests/output/tmp
 ---------
-0a1,5
-> cat: invalid option -- '1'
-> Try 'cat --help' for more information.
+0a1,3
 > cat: '<': No such file or directory
 > head: cannot open '>' for reading: No such file or directory
-> ==> tests/output/tmp <==
+> head: cannot open 'tests/output/tmp' for reading: No such file or directory
 ---------

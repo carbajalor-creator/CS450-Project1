@@ -9,6 +9,14 @@
 #include "constants.h"
 #include "parsetools.h"
 
+
+
+// Void simplecommands() - forks and execs a command with no pipes or redirects
+// 	char *arr[]: passed to execvp(), assumed to be simple commands;
+// 	
+// 	forks arr[] and execs arguements within arr[]. Can only 
+// 	process simple commands
+//
 void simplecommands(char *arr[]) {
 	pid_t pid;
 
@@ -27,8 +35,10 @@ void simplecommands(char *arr[]) {
 }
 
 
-// arr = array of words that have been split up and stored in line_words[]
-// index = num of words
+
+// int pipehelper() - returns the # of pipes in a given argument array
+// 	char *arr[]: used to iterate through and check for pipes
+// 	int index: holds the num of indexs for arr[]
 int pipehelper(char *arr[], int index) {
 	int p = 0;
 	for (int i = 0; i < index; i++) {
@@ -41,7 +51,12 @@ int pipehelper(char *arr[], int index) {
 	return p;
 }
 
-
+// char **strpipe() - appends strings before each pipe and  returns 
+// 		      an array of strings
+// 	char *arr[]: iterated through and appends strings to a temp array
+// 	int index: holds the num of indexes for arr[]
+// 	int *count: value that holds (num of pipes + 1) value, used to free
+// 		    the array at a later point
 char **strpipe(char *arr[], int index, int *count) {
 	
 
@@ -290,8 +305,10 @@ void setup_redirection(char** words, int num_words, char** command_args) {
 }
 
 
-
-void checkRedir(char *kit[], int index) {
+// Void Redir: - sets up the setup_redirection
+//	char *arr[]: passed to setup_redirection for redirection
+// 	int index: holds the num of indexes for arr[]
+void Redir(char *kit[], int index) {
 	pid_t pid = fork();
 
 	if (pid == -1) {
@@ -311,6 +328,22 @@ void checkRedir(char *kit[], int index) {
 	}
 }
 
+// int checkForRedir - returns 0 if there are no redirection symbols, 
+// 		       returns 1 if ">, >>, <" is within a given array index
+// 	char *arr[]: iterated through to look for redirection symbols
+// 	int index: holds the num of indexes for arr[]
+
+int checkForRedir(char *arr[], int num_words) {
+	for (int i = 0; i < num_words; i++) {
+		if (strcmp(arr[i], ">") == 0 || 
+		    strcmp(arr[i], ">>") == 0 ||
+		    strcmp(arr[i], "<") == 0) {
+		    return 1;
+		}
+	}
+
+	return 0;
+}
 
 
 int main() {
@@ -340,43 +373,14 @@ int main() {
 	//
 	//
 	
-	int redir_val = 0;
-	for (int i = 0; i < num_words; i++) {
-		if ( strchr(line_words[i], '>') != NULL || strchr(line_words[i], '<') != NULL ) {
-			checkRedir(line_words, num_words); {
-		       		redir_val = 1;
-				break;
-			}
-		}			
-	} 
-	
-		
-        // switch case time :3  
-	// no longer switch case time :(
+	int redir_val = checkForRedir(line_words, num_words);		
 	
 	int exp = pipehelper(line_words, num_words);
 
 	
 	if (exp == 0 && redir_val == 1) {
-		printf("There was a symbol\n");
-		
-		pid_t pid = fork();
-
-		if (pid == -1) {
-			perror("Fork failed\n");
-
-		} else if (pid == 0) {
-			char* command_args[MAX_LINE_WORDS + 1];
-
-			setup_redirection(line_words, num_words, command_args);
-
-			execvp(command_args[0], command_args);
-
-			perror("execvp failed :(\n");
-			exit(1);
-	} else {
-		if (wait(NULL) == -1) { perror("wait\n"); }
-		}	
+		//printf("There was a symbol\n");
+		Redir(line_words, num_words);
 	} else if (exp == 0) {
 		simplecommands(line_words);
 	} else if (exp == 1) {
