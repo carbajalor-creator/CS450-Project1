@@ -1,0 +1,8 @@
+Commands:
+---------
+wc -l < /usr/share/dict/words
+whoami > tests/output/tmp
+wc -w < /usr/share/dict/words >> tests/output/tmp
+cat tests/output/tmp
+---------
+---------

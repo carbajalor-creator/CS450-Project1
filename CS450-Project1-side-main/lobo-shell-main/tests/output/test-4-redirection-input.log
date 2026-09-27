@@ -1,0 +1,5 @@
+Commands:
+---------
+wc -l < /usr/share/dict/words
+---------
+---------

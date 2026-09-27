@@ -1,0 +1,5 @@
+Commands:
+---------
+cat /usr/share/dict/words | head -100 | wc -l
+---------
+---------
